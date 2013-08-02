@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>
+	<title></title>
+	<!--script type="text/javascript" src="stage.js" charset="UTF-8"></script-->
+</head>
+<body onload="init();">
+	<!--canvas id="demoCanvas" width="890" height="668">
+		alternate content
+	</canvas-->
+
+	<div id="main" style="display:block;width:800px;height:600px;background-color:green;position:relative;"></div>
+
+<script type="text/javascript">
+	// 原點(0,0) 角度+半徑轉座標
+	var a_r_to_x_y=function(a,r){
+		var tanA=Math.tan(Math.PI/180*a);
+		var down=Math.sqrt( (1+tanA*tanA), 2 );
+		var up=r*r;
+		return { x:up/down, y:(up/down)*tanA }
+	};
+
+	// 向量
+	var r=3;
+	var dir_x=1;
+	var dir_y=1;
+	var angulur=60;
+
+	// 開始
+	var init=function(){
+		var span=$('<span></span>').css({display:'inline-block',width:30,height:30,backgroundColor:'red',borderRadius:15,position:'absolute',left:395,top:295});
+		var div=$('#main').append(span);
+
+		// 速度
+		createjs.Ticker.setFPS(200);
+
+		// 時間軸
+		createjs.Ticker.addEventListener("tick",function(e){
+
+			var a=a_r_to_x_y(angulur,r);
+
+			span.css({
+				left:'+='+a.x*dir_x,
+				top:'+='+a.y*dir_y
+			});
+
+			var limit_x=parseInt( $('span').css('left') );
+			var limit_y=parseInt( $('span').css('top') );
+
+			// 計算反彈策略
+			if(limit_y>=600-30)
+				dir_y=-1;
+			if(limit_x>=800-30)
+				dir_x=-1;
+			if(limit_x<=0)
+				dir_x=1;
+			if(limit_y<=0)
+				dir_y=1;
+		});
+	};
+</script>
+</body>
+</html>
